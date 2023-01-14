@@ -14,17 +14,16 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "../components/CopyRight";
-import { useNavigate } from "react-router-dom";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import googleImage from "../assets/images/google.png";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Divider from "@mui/material/Divider";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-  const [confirmMode, setConfirmMode] = React.useState(false);
-
   const navigate = useNavigate();
+  const [confirmMode, setConfirmMode] = React.useState(false);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -210,7 +209,6 @@ export default function SignUp() {
                 try {
                   setSubmitting(true);
                   // confirm sign up user
-
                   // navigate to dashboard
                   navigate("/", { replace: true });
                   setSubmitting(false);
@@ -253,8 +251,8 @@ export default function SignUp() {
                       align="center"
                     >
                       We have sent a confirmation code to your email address{" "}
-                      <b>(test@gmail.com)</b>. Please enter the
-                      code below to complete sign up.
+                      <b>(test@gmail.com)</b>. Please enter the code below to
+                      complete sign up.
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>

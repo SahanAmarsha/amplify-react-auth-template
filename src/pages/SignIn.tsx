@@ -17,13 +17,10 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import {useEffect} from "react";
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const { signIn, user, signInWithFacebook, signInWithGoogle } = useAuth();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -33,12 +30,6 @@ export default function SignIn() {
       .min(8, "Password should be of minimum 8 characters length")
       .required("Password is required"),
   });
-
-  useEffect(() => {
-    if (user) {
-      navigate("/", { replace: true });
-    }
-  }, [user]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -72,7 +63,7 @@ export default function SignIn() {
               setSubmitting(true);
 
               // user sign in
-
+              navigate("/", { replace: true });
               setSubmitting(false);
             } catch (err: any) {
               setStatus({ success: false });
@@ -181,7 +172,6 @@ export default function SignIn() {
                     backgroundColor: "whitesmoke",
                   },
                 }}
-                onClick={signInWithGoogle}
                 startIcon={
                   <Avatar src={googleImage} sx={{ width: 20, height: 20 }} />
                 }
@@ -199,7 +189,6 @@ export default function SignIn() {
                     backgroundColor: "#166FE5",
                   },
                 }}
-                onClick={signInWithFacebook}
                 startIcon={<FacebookIcon fontSize="large" />}
               >
                 Sign In with Facebook

@@ -16,9 +16,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { MainListItems, secondaryListItems } from "./ListItems";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { Menu, MenuItem, Tooltip } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
-import useAuth from "../hooks/useAuth";
 import Dashboard from "../pages/Dashboard";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -74,8 +73,8 @@ const Drawer = styled(MuiDrawer, {
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
-  const { signOut, user, userLoading } = useAuth();
   const [open, setOpen] = React.useState(true);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -91,22 +90,14 @@ const DashboardLayout = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      // sign out user
       await navigate("/signin", { replace: true });
     } catch (err) {
       console.error("Auth Error: ", err);
     }
   };
 
-  useEffect(() => {
-    if (user === null && !userLoading) {
-      navigate("/signin", { replace: true });
-    }
-  }, [user, userLoading]);
 
-  if (userLoading || user === null) {
-    return <LoadingSpinner />;
-  } else {
     return (
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
@@ -217,7 +208,6 @@ const DashboardLayout = () => {
         </Box>
       </Box>
     );
-  }
 };
 
 export default DashboardLayout;
