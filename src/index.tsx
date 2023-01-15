@@ -4,14 +4,22 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import App from "./App";
 import theme from "./theme";
+// import aws amplify
+import { Amplify } from "aws-amplify";
+import awsExports from "./aws-exports";
+import AuthProvider from "./contexts/AuthContext";
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement!);
 
+// configure amplify
+Amplify.configure(awsExports);
+
 root.render(
   <ThemeProvider theme={theme}>
-      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+    <AuthProvider>
       <CssBaseline />
       <App />
+    </AuthProvider>
   </ThemeProvider>
 );

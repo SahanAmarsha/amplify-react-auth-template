@@ -10,7 +10,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/uuid": "^9.0.0",
-    "aws-amplify": "^5.0.9",
+    "aws-amplify": "^5.0.10",
     "formik": "^2.2.9",
     "react": "latest",
     "react-dom": "latest",
