@@ -18,9 +18,13 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import useAuth from "../hooks/useAuth";
+import { useEffect } from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const { signIn, isAuthenticated, isAuthenticating } = useAuth();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -31,6 +35,15 @@ export default function SignIn() {
       .required("Password is required"),
   });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated]);
+
+  if (isAuthenticating || isAuthenticated) {
+    return <LoadingSpinner />;
+  }
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -61,8 +74,8 @@ export default function SignIn() {
           ): Promise<void> => {
             try {
               setSubmitting(true);
-
               // user sign in
+              await signIn({email: values.email, password: values.password});
               navigate("/", { replace: true });
               setSubmitting(false);
             } catch (err: any) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Auth, Hub } from "aws-amplify";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export interface IAuthContextType {
   user: any;
@@ -194,6 +195,10 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
     resendConfirmationCode,
     sendPasswordResetCode,
   };
+
+  if(isAuthenticating) {
+    return <LoadingSpinner />
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

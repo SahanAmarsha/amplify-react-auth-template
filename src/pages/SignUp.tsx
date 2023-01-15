@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -20,10 +18,20 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { useEffect } from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function SignUp() {
   const navigate = useNavigate();
   const [confirmMode, setConfirmMode] = React.useState(false);
+  const {
+    signUp,
+    isAuthenticated,
+    isAuthenticating,
+    unverifiedAccount,
+    confirmAccount,
+  } = useAuth();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -36,6 +44,15 @@ export default function SignUp() {
       .required("Password is required"),
   });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated]);
+
+  if (isAuthenticating || isAuthenticated) {
+    return <LoadingSpinner />;
+  }
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -70,6 +87,12 @@ export default function SignUp() {
               try {
                 setSubmitting(true);
                 // sign up user
+                await signUp({
+                  firstName: values.firstName,
+                  lastName: values.lastName,
+                  email: values.email,
+                  password: values.password,
+                });
                 setConfirmMode(true);
                 setSubmitting(false);
               } catch (err: any) {
@@ -152,14 +175,6 @@ export default function SignUp() {
                       autoComplete="new-password"
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox value="allowExtraEmails" color="primary" />
-                      }
-                      label="I want to receive inspiration, marketing promotions and updates via email."
-                    />
-                  </Grid>
                 </Grid>
                 {/*Display Error with Icon*/}
                 {errors?.submit && (
@@ -209,9 +224,10 @@ export default function SignUp() {
                 try {
                   setSubmitting(true);
                   // confirm sign up user
+                  await confirmAccount({ code: values.code });
+                  setSubmitting(false);
                   // navigate to dashboard
                   navigate("/", { replace: true });
-                  setSubmitting(false);
                 } catch (err: any) {
                   setStatus({ success: false });
                   setErrors({ submit: err.message });
@@ -251,8 +267,8 @@ export default function SignUp() {
                       align="center"
                     >
                       We have sent a confirmation code to your email address{" "}
-                      <b>(test@gmail.com)</b>. Please enter the code below to
-                      complete sign up.
+                      <b>({unverifiedAccount?.email})</b>. Please enter the code
+                      below to complete sign up.
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
