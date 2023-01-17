@@ -16,8 +16,6 @@ export interface IAuthContextType {
     password: string;
   }) => Promise<any>;
   confirmAccount: (p: { code: string }) => Promise<any>;
-  resendConfirmationCode: () => Promise<any>;
-  sendPasswordResetCode: (p: { email: string }) => Promise<any>;
 }
 
 // Create a context object
@@ -33,8 +31,6 @@ export const AuthContext = React.createContext<IAuthContextType>({
   signOut: async () => {},
   signUp: async () => {},
   confirmAccount: async () => {},
-  resendConfirmationCode: async () => {},
-  sendPasswordResetCode: async () => {},
 });
 
 interface IAuthProviderProps {
@@ -49,6 +45,22 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
     email: "",
     password: "",
   });
+
+  /**
+   * fetch currently logged-in user using AWS Auth library
+   * @returns {Promise<void>}
+   */
+  const fetchAuthUser = async () => {
+    try {
+      console.log("fetchAuthUser");
+      const fetchedUser = await Auth.currentAuthenticatedUser();
+      setIsAuthenticating(false);
+      setUser(fetchedUser);
+    } catch (err) {
+      setIsAuthenticating(false);
+      setUser(null);
+    }
+  };
 
   useEffect(() => {
     fetchAuthUser();
@@ -89,22 +101,6 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
       authListener();
     };
   }, []);
-
-  /**
-   * fetch currently logged-in user using AWS Auth library
-   * @returns {Promise<void>}
-   */
-  const fetchAuthUser = async () => {
-    try {
-      console.log("fetchAuthUser");
-      const fetchedUser = await Auth.currentAuthenticatedUser();
-      setIsAuthenticating(false);
-      setUser(fetchedUser);
-    } catch (err) {
-      setIsAuthenticating(false);
-      setUser(null);
-    }
-  };
 
   /**
    * log user in
@@ -164,24 +160,9 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
   };
 
   /**
-   * resend confirmation code
-   * @returns {Promise<any>}
-   */
-  const resendConfirmationCode = async () =>
-    Auth.resendSignUp(unverifiedAccount?.email);
-
-  /**
    * logout user
    */
   const signOut = async () => Auth.signOut();
-
-  /**
-   * send forgot password confirmation code to email
-   * @param email
-   * @returns {Promise<any>}
-   */
-  const sendPasswordResetCode = async ({ email }: { email: string }) =>
-    Auth.forgotPassword(email);
 
   const value = {
     user,
@@ -192,12 +173,10 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
     signOut,
     signUp,
     confirmAccount,
-    resendConfirmationCode,
-    sendPasswordResetCode,
   };
 
-  if(isAuthenticating) {
-    return <LoadingSpinner />
+  if (isAuthenticating) {
+    return <LoadingSpinner />;
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

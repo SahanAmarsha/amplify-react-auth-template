@@ -44,6 +44,7 @@ export default function SignUp() {
       .required("Password is required"),
   });
 
+  //
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/", { replace: true });
