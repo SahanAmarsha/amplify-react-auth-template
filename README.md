@@ -15,6 +15,6 @@ This project is a starter template for authentication using React TypeScript and
 7. Start the app: `yarn start`
 8. Open the app in your browser: `http://localhost:3000`
 
-### 📌 For the complete tutorial, visit: 
+### 📌 For the complete tutorial, visit: [https://sahanamarsha.medium.com/how-to-add-authentication-flow-to-a-react-app-using-context-api-aws-amplify-768a5fc89d4b](https://sahanamarsha.medium.com/how-to-add-authentication-flow-to-a-react-app-using-context-api-aws-amplify-768a5fc89d4b)
 
 This is an example and you can adapt it to your specific project needs.
